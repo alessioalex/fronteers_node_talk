@@ -1,0 +1,70 @@
+<html>
+<head>
+  <link href="http://vjs.zencdn.net/c/video-js.css" rel="stylesheet">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <style type="text/css">
+    body {
+      background: #000;
+      color: #FFFFFF;
+    }
+    #my_video.hidden {
+      display: none;
+    }
+  </style>
+</head>
+<title></title>
+<body>
+
+
+<!-- <h1>Hello children :>) </h1> -->
+<div id="sound_element"></div>
+
+<div id="video_placeholder">
+  <video id="my_video" class="hidden video-js vjs-default-skin" controls
+    preload="auto" width="640" height="264" data-setup="{}">
+  </video>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io.connect();
+  var mplayer;
+
+  socket.on('playVideo', function(video) {
+    console.log('playVid: ', video);
+    showVid(video);
+  });
+
+  socket.on('playSong', function(song) {
+    console.log('play: ', song);
+    if (mplayer) { mplayer.volume = 0; }
+
+    mplayer = new Audio('/music/' + song);
+    mplayer.play();
+  });
+
+  socket.on('playVoice', function(msg) {
+    console.log('play voice: ', msg);
+    if (mplayer) { mplayer.volume = 0; }
+
+    mplayer = new Audio('/sound.mp3?t=' + Date.now());
+    mplayer.play();
+  });
+
+  $('#my_video').attr('width', window.innerWidth);
+  $('#my_video').attr('height', window.innerHeight);
+
+  function showVid(src) {
+    $('#my_video').removeClass('hidden');
+    _V_('my_video').src({
+      type: "video/mp4",
+      src: "/videos/" + src
+    }).requestFullScreen().play().addEvent("ended", function() {
+      $('#my_video').addClass('hidden');
+    });
+  }
+</script>
+<script src="http://vjs.zencdn.net/c/video.js"></script>
+
+</body>
+</html>

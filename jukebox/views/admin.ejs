@@ -1,0 +1,60 @@
+<html>
+<head></head>
+<title></title>
+<body>
+<h1>Secret admin page</h1>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript">
+  $(function() {
+    $('.ajaxy').click(function(evt) {
+      evt.preventDefault();
+
+      $.ajax({
+        url: $(this).attr('href')
+      }).done(function() { 
+        alert('DONE!');
+      });
+    });
+
+    $('#voiceform').submit(function(evt) {
+      evt.preventDefault();
+
+      $.ajax({
+        url: window.location + '/voice/' + $('#voice').val()
+      }).done(function() { 
+        alert('DONE!');
+      });
+    });
+  });
+</script>
+
+<div id="music">
+  <h2>Click on the song you want to be played</h2>
+  <ul>
+    <% songs.forEach(function(song) { %>
+    <li><a class="ajaxy" href="<%- admUrl %>/playSong/<%- song %>"><%- song %></a></li>	
+    <% }); %>
+  </ul>
+</div>
+
+<div id="videos">
+  <h2>Click on the video you want to be played</h2>
+  <ul>
+    <% videos.forEach(function(video) { %>
+    <li><a class="ajaxy" href="<%- admUrl %>/playVideo/<%- video %>"><%- video %></a></li>	
+    <% }); %>
+  </ul>
+</div>
+
+
+<div id="voicediv">
+	<h2>Send a voice message to the lads!</h2>
+	<form id="voiceform" action="/<%- admUrl %>/voice" method="GET">
+		<input type="text" id="voice" />
+		<input type="submit" value="send!" />
+	</form>
+</div>
+
+</body>
+</html>
